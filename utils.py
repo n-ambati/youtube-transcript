@@ -1,10 +1,18 @@
 from urllib.parse import urlparse
+import validators
 from youtube_transcript_api import YouTubeTranscriptApi
 
 
 def get_video_id(video_url):
-    parsed_url = urlparse(video_url)
-    return parsed_url.query.split('v=')[1]
+    valid_url = validators.url(video_url)
+
+    if valid_url:
+        parsed_url = urlparse(video_url)
+        try:
+            query = parsed_url.query.split('v=')[1]
+            return query
+        except IndexError:
+            raise Exception("Invalid YouTube Url")
 
 
 def extract_transcript(video_id):
